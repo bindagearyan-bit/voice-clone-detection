@@ -58,14 +58,14 @@ app.include_router(ws_detection.router)
 app.include_router(http_detection.router)
 
 
-@app.get("/health", tags=["Health Check"])
-async def health_check():
-    """
-    Health check endpoint returning system status and GPU availability.
-    """
+@app.get("/")
+def root():
     return {
-        "status": "healthy",
-        "cuda_available": torch.cuda.is_available()
+        "status": "online",
+        "service": "VoiceGuard AI - Real-Time Deepfake Detection Engine",
+        "docs_url": "/docs",
+        "health": "OK",
+        "version": "1.0.0"
     }
 
 

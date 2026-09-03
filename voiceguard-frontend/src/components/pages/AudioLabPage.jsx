@@ -140,7 +140,8 @@ export const AudioLabPage = () => {
     formData.append('phone_number', '+91 98234 11092');
 
     try {
-      const response = await fetch('http://localhost:8000/analyze-file', {
+      const apiBase = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://voice-clone-detection.onrender.com');
+      const response = await fetch(`${apiBase}/analyze-file`, {
         method: 'POST',
         body: formData,
       });
@@ -154,7 +155,7 @@ export const AudioLabPage = () => {
       setAnalysisResult(data);
     } catch (err) {
       console.error(err);
-      setErrorMsg(`Analysis failed: ${err.message}. Ensure backend is running at http://localhost:8000`);
+      setErrorMsg(`Analysis failed: ${err.message}`);
     } finally {
       setIsAnalyzing(false);
     }

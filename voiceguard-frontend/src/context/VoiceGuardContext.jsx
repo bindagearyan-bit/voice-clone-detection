@@ -6,6 +6,8 @@ import { INITIAL_CONTACTS } from '../data/initialContacts';
 
 const VoiceGuardContext = createContext(null);
 
+const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://voice-clone-detection.onrender.com');
+
 export const VoiceGuardProvider = ({ children }) => {
   // Authentication State
   const [currentUser, setCurrentUser] = useState(() => {
@@ -92,7 +94,7 @@ export const VoiceGuardProvider = ({ children }) => {
   // Ensure active user is synced into Supabase on startup
   useEffect(() => {
     if (currentUser && currentUser.email) {
-      fetch('http://localhost:8000/auth/login', {
+      fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: currentUser.email, password: 'password123' })
@@ -125,7 +127,7 @@ export const VoiceGuardProvider = ({ children }) => {
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
     syncTimerRef.current = setTimeout(async () => {
       try {
-        await fetch('http://localhost:8000/auth/sync-user-data', {
+        await fetch(`${API_BASE}/auth/sync-user-data`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -140,7 +142,7 @@ export const VoiceGuardProvider = ({ children }) => {
   const registerUser = async (name, email, password, phone = '+91 98234 11092') => {
     let resData;
     try {
-      const res = await fetch('http://localhost:8000/auth/register', {
+      const res = await fetch(`${API_BASE}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, phone })
@@ -224,7 +226,7 @@ export const VoiceGuardProvider = ({ children }) => {
   const loginUser = async (email, password) => {
     let resData;
     try {
-      const res = await fetch('http://localhost:8000/auth/login', {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -563,7 +565,7 @@ export const VoiceGuardProvider = ({ children }) => {
               formData.append('file', e.data, `live_chunk_${currentSeq}.webm`);
 
               try {
-                const res = await fetch('http://localhost:8000/analyze-chunk', {
+                const res = await fetch(`${API_BASE}/analyze-chunk`, {
                   method: 'POST',
                   body: formData
                 });
