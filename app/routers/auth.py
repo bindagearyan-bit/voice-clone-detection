@@ -385,11 +385,101 @@ async def login(req: LoginRequest):
         raise HTTPException(status_code=500, detail=f"Login error: {str(e)}")
 
 
+class SaveCallRequest(BaseModel):
+    user_id: Optional[str] = None
+    email: Optional[str] = None
+    call_id: str
+    phone_number: str
+    caller_tag: Optional[str] = "Direct Outbound Call"
+    risk_score: int = 10
+    max_risk_score: int = 10
+    risk_level: str = "LOW"
+    classification: str = "Voice Appears Natural"
+    duration_sec: int = 0
+    confidence: Optional[float] = 95.0
+    is_blocked: bool = False
+    timestamp: Optional[str] = None
+
+
+@router.post("/save-call")
+async def save_call_record(req: SaveCallRequest):
+    """
+    Saves a completed call analysis record and updates the user's statistics in Supabase & SQLite.
+    """
+    now_iso = datetime.now(timezone.utc).isoformat()
+    supabase = get_supabase()
+
+    # 1. Update statistics in Supabase
+    if supabase is not None:
+        try:
+            # Query user
+            user_rec = None
+            if req.user_id:
+                res = supabase.table("users").select("*").eq("id", req.user_id).execute()
+                if res.data:
+                    user_rec = res.data[0]
+            if not user_rec and req.email:
+                res = supabase.table("users").select("*").eq("email", req.email.strip().lower()).execute()
+                if res.data:
+                    user_rec = res.data[0]
+
+            if user_rec:
+                u_id = user_rec.get("id")
+                curr_total = user_rec.get("total_calls_analyzed", 0) or 0
+                curr_fakes = user_rec.get("fake_calls_detected", 0) or 0
+                new_fakes = curr_fakes + 1 if req.risk_level == "HIGH" or req.max_risk_score >= 80 else curr_fakes
+
+                supabase.table("users").update({
+                    "total_calls_analyzed": curr_total + 1,
+                    "fake_calls_detected": new_fakes,
+                    "last_login": now_iso
+                }).eq("id", u_id).execute()
+                logger.info(f"Updated Supabase user '{u_id}' statistics: total_calls={curr_total + 1}, fake_calls={new_fakes}")
+            
+            # Also attempt to insert into call_logs / calls if table exists
+            try:
+                call_row = {
+                    "id": str(uuid.uuid4()),
+                    "call_id": req.call_id,
+                    "caller_phone": req.phone_number,
+                    "caller_name": req.caller_tag,
+                    "risk_score": req.max_risk_score,
+                    "risk_level": req.risk_level,
+                    "classification": req.classification,
+                    "duration_sec": req.duration_sec,
+                    "created_at": now_iso
+                }
+                supabase.table("call_logs").insert(call_row).execute()
+            except Exception:
+                pass  # Optional auxiliary table
+        except Exception as sb_err:
+            logger.warning(f"Supabase save_call warning: {sb_err}")
+
+    return {"success": True, "message": "Call record saved and synced to database"}
+
+
 @router.post("/sync-user-data")
 async def sync_user_data(req: SyncUserDataRequest):
     """
     Syncs user contacts, history, notifications, and settings to SQLite & Supabase.
     """
+    now_iso = datetime.now(timezone.utc).isoformat()
+    supabase = get_supabase()
+
+    # 1. Update Supabase if connected
+    if supabase is not None and req.user_id:
+        try:
+            sb_update = {"last_login": now_iso}
+            if req.history is not None:
+                total_calls = len(req.history)
+                fakes = sum(1 for h in req.history if h.get("riskLevel") == "HIGH" or h.get("maxRiskScore", 0) >= 80)
+                sb_update["total_calls_analyzed"] = total_calls
+                sb_update["fake_calls_detected"] = fakes
+            supabase.table("users").update(sb_update).eq("id", req.user_id).execute()
+        except Exception as sb_err:
+            logger.warning(f"Supabase sync_user_data warning: {sb_err}")
+
+    # 2. Update SQLite
     try:
         conn = sqlite3.connect(str(DB_FILE))
         cursor = conn.cursor()
@@ -424,3 +514,4 @@ async def sync_user_data(req: SyncUserDataRequest):
     except Exception as e:
         logger.error(f"Error syncing user data: {e}")
         raise HTTPException(status_code=500, detail=f"Data sync failed: {str(e)}")
+

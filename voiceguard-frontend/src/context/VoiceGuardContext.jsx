@@ -493,7 +493,35 @@ export const VoiceGuardProvider = ({ children }) => {
       indicators: summaryData.indicators,
       safetyWarning: summaryData.safetyWarning?.points?.join(' ') || null,
     };
-    setCallHistory((prev) => [newHistoryEntry, ...prev]);
+    
+    setCallHistory((prev) => {
+      const updated = [newHistoryEntry, ...prev];
+      syncUserData({ history: updated });
+      return updated;
+    });
+
+    // Send direct call telemetry to backend & Supabase
+    if (currentUser) {
+      fetch(`${API_BASE}/auth/save-call`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: currentUser.id,
+          email: currentUser.email,
+          call_id: summaryData.callId,
+          phone_number: summaryData.callerNumber,
+          caller_tag: summaryData.callerLabel,
+          risk_score: summaryData.averageRiskScore,
+          max_risk_score: summaryData.maxRiskScore,
+          risk_level: summaryData.finalRiskLevel,
+          classification: summaryData.classification,
+          duration_sec: summaryData.durationSec,
+          confidence: summaryData.confidence,
+          is_blocked: summaryData.isBlocked,
+          timestamp: new Date().toISOString()
+        })
+      }).catch((err) => console.warn('Supabase call record sync check:', err));
+    }
 
     // If High Risk, add high risk alert notification
     if (finalLevel === 'HIGH') {
@@ -506,7 +534,11 @@ export const VoiceGuardProvider = ({ children }) => {
         isRead: false,
         callId: summaryData.callId,
       };
-      setNotifications((prev) => [newNotif, ...prev]);
+      setNotifications((prev) => {
+        const updated = [newNotif, ...prev];
+        syncUserData({ notifications: updated });
+        return updated;
+      });
     } else {
       const newNotif = {
         id: `notif_${Date.now()}`,
@@ -517,7 +549,11 @@ export const VoiceGuardProvider = ({ children }) => {
         isRead: false,
         callId: summaryData.callId,
       };
-      setNotifications((prev) => [newNotif, ...prev]);
+      setNotifications((prev) => {
+        const updated = [newNotif, ...prev];
+        syncUserData({ notifications: updated });
+        return updated;
+      });
     }
   };
 
