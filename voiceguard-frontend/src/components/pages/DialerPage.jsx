@@ -86,11 +86,13 @@ export const DialerPage = () => {
   };
 
   const handleInitiateCall = (targetNumber = dialedNumber, callerLabel = 'Direct Outbound Call') => {
-    const finalNumber = targetNumber || '+91 98110 54321';
+    const finalNumber = targetNumber || dialedNumber || '+91 98110 54321';
     startProtectedCall({
       phoneNumber: finalNumber,
       callerLabel: callerLabel,
-      scenarioId: selectedScenarioId
+      scenarioId: selectedScenarioId,
+      isOutgoing: true,
+      launchNativeDialer: true
     });
   };
 

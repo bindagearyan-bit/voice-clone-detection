@@ -333,11 +333,13 @@ export const VoiceGuardProvider = ({ children }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Helper: Start Protected Call (triggers incoming call state)
-  const startProtectedCall = (scenarioOrOptions = selectedScenarioId) => {
-    let sc = DEMO_SCENARIOS.find((s) => s.id === scenarioOrOptions) || DEMO_SCENARIOS[0];
+  // Helper: Start Protected Call (supports Outbound Direct Calls and Incoming Simulations)
+  const startProtectedCall = (scenarioOrOptions, options = {}) => {
+    let sc = DEMO_SCENARIOS[0];
     let customNumber = sc.callerNumber;
     let customLabel = sc.callerLabel;
+    let isOutgoing = true; // Default to outbound when initiated by user
+    let launchNativeDialer = true;
 
     if (typeof scenarioOrOptions === 'object' && scenarioOrOptions !== null) {
       if (scenarioOrOptions.scenarioId) {
@@ -345,9 +347,39 @@ export const VoiceGuardProvider = ({ children }) => {
       }
       if (scenarioOrOptions.phoneNumber) customNumber = scenarioOrOptions.phoneNumber;
       if (scenarioOrOptions.callerLabel) customLabel = scenarioOrOptions.callerLabel;
-    } else if (typeof scenarioOrOptions === 'string' && scenarioOrOptions.startsWith('+')) {
-      customNumber = scenarioOrOptions;
-      customLabel = 'Direct Outbound Dial';
+      if (scenarioOrOptions.isOutgoing !== undefined) isOutgoing = scenarioOrOptions.isOutgoing;
+      if (scenarioOrOptions.launchNativeDialer !== undefined) launchNativeDialer = scenarioOrOptions.launchNativeDialer;
+    } else if (typeof scenarioOrOptions === 'string') {
+      if (scenarioOrOptions.startsWith('scenario_')) {
+        sc = DEMO_SCENARIOS.find((s) => s.id === scenarioOrOptions) || sc;
+        customNumber = sc.callerNumber;
+        customLabel = sc.callerLabel;
+        isOutgoing = false; // Scenario simulator test
+      } else {
+        customNumber = scenarioOrOptions;
+        customLabel = 'Direct Outbound Dial';
+        isOutgoing = true;
+      }
+    }
+
+    if (options.isOutgoing !== undefined) isOutgoing = options.isOutgoing;
+    if (options.launchNativeDialer !== undefined) launchNativeDialer = options.launchNativeDialer;
+
+    // Trigger mobile phone dialer if requested on mobile devices
+    if (launchNativeDialer && customNumber && isOutgoing) {
+      const cleanPhone = customNumber.replace(/[^\d+]/g, '');
+      if (cleanPhone) {
+        try {
+          const telAnchor = document.createElement('a');
+          telAnchor.href = `tel:${cleanPhone}`;
+          telAnchor.style.display = 'none';
+          document.body.appendChild(telAnchor);
+          telAnchor.click();
+          setTimeout(() => document.body.removeChild(telAnchor), 500);
+        } catch (e) {
+          console.warn('Native mobile dialer link trigger:', e);
+        }
+      }
     }
 
     setSelectedScenarioId(sc.id);
@@ -357,22 +389,25 @@ export const VoiceGuardProvider = ({ children }) => {
       id: newCallId,
       callerNumber: customNumber,
       callerLabel: customLabel,
+      isOutgoing: isOutgoing,
       startTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     });
 
-    setCallState('incoming');
+    // If Outgoing: directly enter 'monitoring' (Active Call) without asking to accept
+    // If Incoming simulation: enter 'incoming' state
+    setCallState(isOutgoing ? 'monitoring' : 'incoming');
     setCallTimer(0);
     setChunkIndex(0);
     setProcessedChunks([]);
     setCurrentChunk(null);
-    setLiveRiskScore(15);
+    setLiveRiskScore(12);
     setLiveRiskLevel('LOW');
-    setLiveConfidence(92);
-    setLiveReason('Voice appears natural');
+    setLiveConfidence(95);
+    setLiveReason(isOutgoing ? 'Active outbound call • AI Voice Shield Monitoring...' : 'Voice appears natural');
     setIsHighRiskAlertOpen(false);
     setCallSummary(null);
 
-    // If not already on /calls, navigate there
+    // Navigate to /calls
     if (currentRoute !== '/calls') {
       navigateTo('/calls');
     }
