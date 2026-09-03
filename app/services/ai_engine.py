@@ -12,15 +12,25 @@ logger = logging.getLogger("voice_fraud_detection")
 class DeepfakeDetectionService:
     def __init__(self, model_id: Optional[str] = None):
         self.model_id = model_id or settings.MODEL_ID
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        logger.info(f"Initializing AI Engine with model '{self.model_id}' on {self.device}...")
+        self.device = torch.device("cpu")
+        torch.set_num_threads(1)
+        logger.info(f"Initializing AI Engine with model '{self.model_id}' (low_cpu_mem_usage=True)...")
         
-        self.feature_extractor = AutoFeatureExtractor.from_pretrained(self.model_id)
-        self.model = AutoModelForAudioClassification.from_pretrained(self.model_id)
-        self.model.to(self.device)
-        self.model.eval()
-        logger.info("AI Engine model successfully loaded and initialized in eval mode.")
+        self.feature_extractor = None
+        self.model = None
         self.prediction_counter = 0
+
+        try:
+            self.feature_extractor = AutoFeatureExtractor.from_pretrained(self.model_id)
+            self.model = AutoModelForAudioClassification.from_pretrained(
+                self.model_id,
+                low_cpu_mem_usage=True,
+                torch_dtype=torch.float32
+            )
+            self.model.eval()
+            logger.info("AI Engine model successfully loaded in optimized low-RAM mode.")
+        except Exception as e:
+            logger.warning(f"Failed to load heavy HF model into limited RAM: {e}. Using lightweight acoustic classifier fallback.")
 
     def _extract_acoustic_metrics(self, audio_array: np.ndarray, sr: int = 16000) -> dict:
         """Extracts dynamic acoustic parameters from the audio chunk."""
