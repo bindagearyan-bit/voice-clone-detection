@@ -7,7 +7,8 @@ import {
   Radio, 
   Cpu, 
   Sliders,
-  ChevronDown
+  ChevronDown,
+  Menu
 } from 'lucide-react';
 import { useVoiceGuard } from '../../context/VoiceGuardContext';
 import { DEMO_SCENARIOS } from '../../data/demoScenarios';
@@ -20,7 +21,9 @@ export const TopHeader = () => {
     selectedScenarioId, 
     setSelectedScenarioId, 
     startProtectedCall, 
-    callState 
+    callState,
+    mobileSidebarOpen,
+    setMobileSidebarOpen
   } = useVoiceGuard();
 
   const getPageTitle = () => {
@@ -45,15 +48,24 @@ export const TopHeader = () => {
   };
 
   return (
-    <header className="bg-white border-b border-slate-200 px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4 shrink-0 shadow-sm">
-      {/* Title & Status */}
+    <header className="bg-white border-b border-slate-200 px-4 md:px-6 py-3 flex items-center justify-between gap-3 shrink-0 shadow-sm">
+      {/* Title, Mobile Hamburger & Status */}
       <div className="flex items-center gap-3">
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+          title="Toggle Navigation Menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
         <div>
-          <h2 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+          <h2 className="text-sm md:text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             {getPageTitle()}
           </h2>
           <div className="flex items-center gap-2 text-xs text-slate-500 font-medium mt-0.5">
-            <span className="inline-flex items-center gap-1.5 text-emerald-600 font-semibold font-mono text-[11px]">
+            <span className="inline-flex items-center gap-1.5 text-emerald-600 font-semibold font-mono text-[10px] md:text-[11px]">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               Live Protection Active
             </span>

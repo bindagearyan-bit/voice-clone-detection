@@ -20,6 +20,7 @@ export const VoiceGuardProvider = ({ children }) => {
   });
 
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Navigation Routing State
   // '/home' | '/audiolab' | '/dialer' | '/calls' | '/notifications' | '/history' | '/settings' | '/about'
@@ -686,6 +687,8 @@ export const VoiceGuardProvider = ({ children }) => {
         currentRoute,
         routeParams,
         navigateTo,
+        mobileSidebarOpen,
+        setMobileSidebarOpen,
         demoModeActive,
         setDemoModeActive,
         selectedScenarioId,
