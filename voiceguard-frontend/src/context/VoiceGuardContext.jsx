@@ -27,8 +27,25 @@ export const VoiceGuardProvider = ({ children }) => {
   const [currentRoute, setCurrentRoute] = useState('/home');
   const [routeParams, setRouteParams] = useState({});
 
-  // Global Demo Mode Toggle
-  const [demoModeActive, setDemoModeActive] = useState(true);
+  // Global Demo Mode Toggle (Defaults to FALSE, persisted in localStorage)
+  const [demoModeActive, setDemoModeActiveState] = useState(() => {
+    try {
+      const saved = localStorage.getItem('voiceguard_demo_mode');
+      return saved !== null ? JSON.parse(saved) : false; // Default OFF for real-time live calls
+    } catch {
+      return false;
+    }
+  });
+
+  const setDemoModeActive = (val) => {
+    setDemoModeActiveState(val);
+    try {
+      localStorage.setItem('voiceguard_demo_mode', JSON.stringify(val));
+    } catch (e) {
+      console.warn('Demo mode localStorage error:', e);
+    }
+  };
+
   const [selectedScenarioId, setSelectedScenarioId] = useState(DEMO_SCENARIOS[0].id);
 
   // Call State Machine: 'idle' | 'incoming' | 'monitoring' | 'ended'
@@ -322,6 +339,7 @@ export const VoiceGuardProvider = ({ children }) => {
   // Timer & Stream References
   const timerIntervalRef = useRef(null);
   const chunkStreamRef = useRef(null);
+  const recordedAudioChunksRef = useRef([]);
 
   // Active scenario reference
   const currentScenario = DEMO_SCENARIOS.find((s) => s.id === selectedScenarioId) || DEMO_SCENARIOS[0];
@@ -335,6 +353,7 @@ export const VoiceGuardProvider = ({ children }) => {
 
   // Helper: Start Protected Call (supports Outbound Direct Calls and Incoming Simulations)
   const startProtectedCall = (scenarioOrOptions, options = {}) => {
+    recordedAudioChunksRef.current = []; // Reset real audio recording buffer for new call
     let sc = DEMO_SCENARIOS[0];
     let customNumber = sc.callerNumber;
     let customLabel = sc.callerLabel;
@@ -452,6 +471,12 @@ export const VoiceGuardProvider = ({ children }) => {
         ? 'MODERATE SPOOF RISK'
         : 'LOW SPOOF RISK';
 
+    // Construct Real Audio Recording Blob from live microphone chunks if available
+    let realAudioBlob = null;
+    if (recordedAudioChunksRef.current && recordedAudioChunksRef.current.length > 0) {
+      realAudioBlob = new Blob(recordedAudioChunksRef.current, { type: 'audio/webm' });
+    }
+
     const summaryData = {
       callId: activeCall.id || `call_${Date.now()}`,
       callerNumber: activeCall.callerNumber,
@@ -470,6 +495,7 @@ export const VoiceGuardProvider = ({ children }) => {
       isBlocked,
       timestamp: 'Just now',
       chunksTimeline: processedChunks.length > 0 ? processedChunks : currentScenario.chunks,
+      realAudioBlob: realAudioBlob,
     };
 
     setCallSummary(summaryData);
@@ -628,6 +654,7 @@ export const VoiceGuardProvider = ({ children }) => {
 
           recorder.ondataavailable = async (e) => {
             if (e.data && e.data.size > 0) {
+              recordedAudioChunksRef.current.push(e.data);
               chunkSeq += 1;
               const currentSeq = chunkSeq;
               const formData = new FormData();

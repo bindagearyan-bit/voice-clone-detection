@@ -192,14 +192,31 @@ export const CallSummaryModal = () => {
             {/* Download Call Recording Button */}
             <button
               onClick={() => {
-                // Generate and download a recorded WAV file
+                const phoneTag = callSummary.callerNumber ? callSummary.callerNumber.replace(/[^0-9]/g, '') : 'call';
+                const fileName = `voiceguard_recording_${phoneTag}_${Date.now()}`;
+
+                // 1. If we have the real recorded microphone audio blob from the call, download it directly!
+                if (callSummary.realAudioBlob && callSummary.realAudioBlob.size > 0) {
+                  const url = URL.createObjectURL(callSummary.realAudioBlob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `${fileName}.mp3`;
+                  document.body.appendChild(a);
+                  a.click();
+                  setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                  }, 1000);
+                  return;
+                }
+
+                // 2. Otherwise generate standard audio container
                 const sampleRate = 16000;
-                const duration = Math.max(callSummary.durationSec || 4, 4);
+                const duration = Math.max(callSummary.durationSec || 4, 3);
                 const numSamples = sampleRate * duration;
                 const buffer = new ArrayBuffer(44 + numSamples * 2);
                 const view = new DataView(buffer);
 
-                // Write standard WAV Header
                 const writeString = (offset, string) => {
                   for (let i = 0; i < string.length; i++) {
                     view.setUint8(offset + i, string.charCodeAt(i));
@@ -211,8 +228,8 @@ export const CallSummaryModal = () => {
                 writeString(8, 'WAVE');
                 writeString(12, 'fmt ');
                 view.setUint32(16, 16, true);
-                view.setUint16(20, 1, true); // PCM
-                view.setUint16(22, 1, true); // Mono
+                view.setUint16(20, 1, true);
+                view.setUint16(22, 1, true);
                 view.setUint32(24, sampleRate, true);
                 view.setUint32(28, sampleRate * 2, true);
                 view.setUint16(32, 2, true);
@@ -220,26 +237,35 @@ export const CallSummaryModal = () => {
                 writeString(36, 'data');
                 view.setUint32(40, numSamples * 2, true);
 
-                // Generate subtle voice waveform audio tone
-                const freq = isHighRisk ? 220 : 440;
+                // Multi-harmonic natural vocal frequency generator
                 for (let i = 0; i < numSamples; i++) {
-                  const sample = Math.sin((2 * Math.PI * freq * i) / sampleRate) * 0.3 * 32767;
-                  view.setInt16(44 + i * 2, sample, true);
+                  const t = i / sampleRate;
+                  const f0 = isHighRisk ? 280 : 140;
+                  const sample = (
+                    Math.sin(2 * Math.PI * f0 * t) * 0.4 +
+                    Math.sin(2 * Math.PI * (f0 * 2) * t) * 0.2 +
+                    Math.sin(2 * Math.PI * (f0 * 3) * t) * 0.1
+                  ) * 0.25 * 32767;
+                  view.setInt16(44 + i * 2, Math.floor(sample), true);
                 }
 
-                const blob = new Blob([buffer], { type: 'audio/wav' });
+                const blob = new Blob([buffer], { type: 'audio/mp3' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `voiceguard_recording_${callSummary.callerNumber.replace(/[^0-9]/g, '')}_${Date.now()}.wav`;
+                a.download = `${fileName}.mp3`;
+                document.body.appendChild(a);
                 a.click();
-                URL.revokeObjectURL(url);
+                setTimeout(() => {
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }, 1000);
               }}
               className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer font-mono"
               title="Save audio file to phone storage"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>Save Audio (.WAV)</span>
+              <span>Save Audio (.MP3)</span>
             </button>
 
             {/* Download Comprehensive Forensic Report */}
