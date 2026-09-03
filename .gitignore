@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Node Modules & Build
+voiceguard-frontend/node_modules/
+voiceguard-frontend/dist/
+node_modules/
+dist/
+
+# Local DB & Temp Files
+*.log
+voiceguard_users.db
+compressed.zip
+
+# Environment Variables
+.env
