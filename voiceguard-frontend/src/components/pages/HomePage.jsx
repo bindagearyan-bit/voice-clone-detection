@@ -20,11 +20,30 @@ import { useVoiceGuard } from '../../context/VoiceGuardContext';
 
 export const HomePage = () => {
   const { 
+    currentUser,
     startProtectedCall, 
     navigateTo, 
     callHistory, 
     viewCallDetails 
   } = useVoiceGuard();
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good morning';
+    if (hour >= 12 && hour < 17) return 'Good afternoon';
+    if (hour >= 17 && hour < 22) return 'Good evening';
+    return 'Good night';
+  };
+
+  const getGreetingIcon = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return '🌅';
+    if (hour >= 12 && hour < 17) return '☀️';
+    if (hour >= 17 && hour < 22) return '🌆';
+    return '🌙';
+  };
+
+  const userName = currentUser?.name || currentUser?.email?.split('@')[0] || '';
 
   const steps = [
     { num: '01', title: 'Unknown Call', desc: 'Call arrives from an unregistered number.' },
@@ -43,8 +62,9 @@ export const HomePage = () => {
           <span className="text-xs font-mono font-bold text-blue-600 uppercase tracking-wider">
             AI Cyber Defense Hub
           </span>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-            Good evening 👋
+          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mt-1 flex items-center gap-2">
+            <span>{getGreeting()}{userName ? `, ${userName}` : ''}</span>
+            <span>{getGreetingIcon()}</span>
           </h1>
           <p className="text-sm text-slate-500 font-medium">
             Your voice is your identity. We protect it.
