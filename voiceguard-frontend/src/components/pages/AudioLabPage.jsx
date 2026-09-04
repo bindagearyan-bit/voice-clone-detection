@@ -28,20 +28,33 @@ import { useVoiceGuard } from '../../context/VoiceGuardContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://voice-clone-detection.onrender.com');
 
-// Helper to generate synthetic WAV buffer if server is cold-starting
+// Helper to generate realistic vocal speech synthesis WAV buffer if network is completely unavailable
 const generateFallbackWavBlob = (isCloned = false) => {
   const sampleRate = 16000;
-  const durationSec = 6.0;
+  const durationSec = 5.0;
   const numSamples = sampleRate * durationSec;
   const buffer = new Float32Array(numSamples);
   
+  // Synthesize realistic speech-like formant harmonics (F0, F1, F2) with syllable cadence
   for (let i = 0; i < numSamples; i++) {
     const t = i / sampleRate;
-    const baseFreq = isCloned ? 140 : 130 + Math.sin(t * 3) * 15;
-    const tone = Math.sin(2 * Math.PI * baseFreq * t);
-    const harmonic = 0.5 * Math.sin(2 * Math.PI * (baseFreq * 2) * t);
-    const noise = (Math.random() - 0.5) * (isCloned ? 0.05 : 0.15);
-    buffer[i] = (tone + harmonic + noise) * 0.4;
+    // Syllable rhythm envelope (~3 syllables per second)
+    const syllableEnv = Math.max(0, Math.sin(2 * Math.PI * 3.2 * t)) ** 2;
+    
+    // Fundamental pitch F0
+    const f0 = isCloned 
+      ? 145 + Math.sin(t * 1.5) * 2 // Rigid robotic AI pitch contour
+      : 135 + Math.sin(t * 2.8) * 18 + Math.cos(t * 4.2) * 8; // Organic human pitch variation
+    
+    // Vocal tract formants (F1 ~ 500Hz, F2 ~ 1500Hz, F3 ~ 2500Hz)
+    const voiceSignal = 
+      Math.sin(2 * Math.PI * f0 * t) * 0.4 +
+      Math.sin(2 * Math.PI * (f0 * 2) * t) * 0.25 +
+      Math.sin(2 * Math.PI * 520 * t) * 0.2 +
+      Math.sin(2 * Math.PI * 1480 * t) * 0.15;
+    
+    const breathNoise = (Math.random() - 0.5) * (isCloned ? 0.02 : 0.08);
+    buffer[i] = (voiceSignal * syllableEnv + breathNoise) * 0.35;
   }
 
   // Encode 16-bit PCM WAV
@@ -93,10 +106,10 @@ export const AudioLabPage = () => {
   const [chunkDuration, setChunkDuration] = useState(2.0);
 
   const [availableSamples, setAvailableSamples] = useState([
-    { filename: 'cloned_1.wav', label: 'AI Cloned Voice 1', type: 'cloned', desc: 'Synthetic neural speech clone sample' },
-    { filename: 'cloned_2.wav', label: 'AI Cloned Voice 2', type: 'cloned', desc: 'AI vocoder cloned audio sample' },
-    { filename: 'real_1.wav', label: 'Authentic Voice 1', type: 'real', desc: 'Natural human biological speech' },
-    { filename: 'real_2.wav', label: 'Authentic Voice 2', type: 'real', desc: 'Natural human conversational speech' }
+    { filename: 'cloned_1.wav', label: 'AI Cloned Voice 1', type: 'cloned', desc: 'Synthetic neural speech clone — Bank OTP alert' },
+    { filename: 'cloned_2.wav', label: 'AI Cloned Voice 2', type: 'cloned', desc: 'AI vocoder cloned audio — Urgent bill demand' },
+    { filename: 'real_1.wav', label: 'Authentic Voice 1', type: 'real', desc: 'Natural human biological speech — Friend meetup' },
+    { filename: 'real_2.wav', label: 'Authentic Voice 2', type: 'real', desc: 'Natural human conversational speech — Project sync' }
   ]);
 
   const audioRef = useRef(null);
@@ -157,17 +170,35 @@ export const AudioLabPage = () => {
     setAnalysisResult(null);
 
     try {
-      let file;
+      let file = null;
+
+      // 1. Primary: Load pre-packaged actual WAV file from public frontend assets
       try {
-        const res = await fetch(`${API_BASE}/samples/${sample.filename}`);
-        if (res.ok) {
-          const blob = await res.blob();
+        const localRes = await fetch(`/samples/${sample.filename}`);
+        if (localRes.ok) {
+          const blob = await localRes.blob();
           file = new File([blob], sample.filename, { type: 'audio/wav' });
-        } else {
-          throw new Error(`Server returned ${res.status}`);
         }
-      } catch (fetchErr) {
-        console.warn('Backend sample fetch failed, using internal audio generator:', fetchErr);
+      } catch (localErr) {
+        console.warn('Local static sample load failed, trying backend API:', localErr);
+      }
+
+      // 2. Secondary: If not found locally, load from backend server
+      if (!file) {
+        try {
+          const apiRes = await fetch(`${API_BASE}/samples/${sample.filename}`);
+          if (apiRes.ok) {
+            const blob = await apiRes.blob();
+            file = new File([blob], sample.filename, { type: 'audio/wav' });
+          }
+        } catch (apiErr) {
+          console.warn('Backend sample fetch failed:', apiErr);
+        }
+      }
+
+      // 3. Fallback: Generate vocal speech formant buffer
+      if (!file) {
+        console.warn('Falling back to synthesized vocal buffer');
         const fallbackBlob = generateFallbackWavBlob(sample.type === 'cloned');
         file = new File([fallbackBlob], sample.filename, { type: 'audio/wav' });
       }
