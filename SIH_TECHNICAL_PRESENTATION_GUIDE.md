@@ -23,37 +23,32 @@
 
 ## 3. Complete Technology Stack Matrix
 
-### A. Frontend Layer (User Interface & Audio Interception)
-* **React 18.3**: Component-driven reactive user interface providing declarative rendering and sub-16ms UI updates (60 fps).
-* **Vite 5.4**: Next-generation frontend build tool and development server using native ES modules for ultra-fast bundling.
-* **Tailwind CSS 3.4**: Utility-first styling framework configured for high-contrast cyber-defense command center styling, dark/light mode, and glassmorphism.
-* **Lucide React**: Vector iconography library for security HUD indicators, gauges, and status badges.
-* **Web Audio API**: Browser audio context interface capturing raw hardware microphone streams at 16,000 Hz.
-* **MediaRecorder API**: Real-time timeslicing engine slicing continuous speech into discrete 2.0-second audio buffers (`audio/webm`).
-* **Native Contact Picker API (`navigator.contacts.select`)**: Mobile browser bridge importing device address books directly into the Trusted Voice Vault.
-* **HTML5 Canvas & SVG**: Renders real-time dynamic spectrograms, decibel level meters, and radial risk gauges.
-
-### B. Backend Layer (Inference Engine & Telephony Service)
-* **Python 3.11**: High-performance backend runtime optimized for asynchronous I/O and scientific computing.
-* **FastAPI 0.115**: Modern, asynchronous web framework based on Starlette and Pydantic for high-throughput HTTP REST and WebSocket streaming.
-* **Uvicorn 0.30 (ASGI)**: High-concurrency event-loop web server handling parallel asynchronous chunk streams.
-* **PyTorch 2.3.1 (CPU Optimized)**: Deep learning framework executing neural inference with single-thread CPU memory gating (`low_cpu_mem_usage=True`).
-* **Torchaudio 2.3.1**: PyTorch native audio I/O and signal processing library.
-* **Hugging Face Transformers 4.44**: Neural network library managing Wav2Vec 2.0 feature extractors and classification heads.
-* **Librosa 0.10.2**: Music and audio analysis library used for acoustic feature extraction (pitch $F_0$, spectral flatness, rolloff, jitter).
-* **NumPy 1.26**: Vectorized array computation for signal manipulation and tensor conversion.
-* **SoundFile 0.12**: Audio file reading and writing interface supporting WAV, FLAC, and raw PCM.
-* **Pydantic 2.8 & Pydantic Settings**: Data validation, schema enforcement, and environment variable management.
-* **Python-Multipart**: Form data parser for asynchronous multi-part audio chunk uploads.
-
-### C. Database, Storage & Cloud Layer
-* **Supabase (PostgreSQL 15)**: Managed cloud relational database hosting the `users` table, unique phone indexes, authentication states, and telemetry data.
-* **SQLite 3**: Local client-side embedded database providing zero-latency offline mirroring and resilience against network dropouts.
-* **Docker (Debian 12 Slim)**: Multi-stage container runtime pre-packaging FFmpeg, libsndfile1, and system audio libraries.
-* **Render.com**: Cloud application platform running the containerized FastAPI Python AI backend.
-* **Vercel.com**: Edge cloud CDN hosting the HTTPS React frontend with automatic SSL certification required for mobile hardware microphone permissions.
-
----
+| Layer | Technology | Purpose / Role |
+|---|---|---|
+| **Frontend** | **React 18.3** | Component-driven reactive user interface providing declarative rendering and sub-16ms UI updates (60 fps). |
+| **Frontend** | **Vite 5.4** | Next-generation frontend build tool and development server using native ES modules for ultra-fast bundling. |
+| **Frontend** | **Tailwind CSS 3.4** | Utility-first styling framework configured for high-contrast cyber-defense command center styling, dark/light mode, and glassmorphism. |
+| **Frontend** | **Lucide React** | Vector iconography library for security HUD indicators, gauges, and status badges. |
+| **Frontend** | **Web Audio API** | Browser audio context interface capturing raw hardware microphone streams at 16,000 Hz. |
+| **Frontend** | **MediaRecorder API** | Real-time timeslicing engine slicing continuous speech into discrete 2.0-second audio buffers (`audio/webm`). |
+| **Frontend** | **Native Contact Picker API (`navigator.contacts.select`)** | Mobile browser bridge importing device address books directly into the Trusted Voice Vault. |
+| **Frontend** | **HTML5 Canvas & SVG** | Renders real-time dynamic spectrograms, decibel level meters, and radial risk gauges. |
+| **Backend** | **Python 3.11** | High-performance backend runtime optimized for asynchronous I/O and scientific computing. |
+| **Backend** | **FastAPI 0.115** | Modern, asynchronous web framework based on Starlette and Pydantic for high-throughput HTTP REST and WebSocket streaming. |
+| **Backend** | **Uvicorn 0.30 (ASGI)** | High-concurrency event-loop web server handling parallel asynchronous chunk streams. |
+| **Backend** | **PyTorch 2.3.1 (CPU Optimized)** | Deep learning framework executing neural inference with single-thread CPU memory gating (`low_cpu_mem_usage=True`). |
+| **Backend** | **Torchaudio 2.3.1** | PyTorch native audio I/O and signal processing library. |
+| **Backend** | **Hugging Face Transformers 4.44** | Neural network library managing Wav2Vec 2.0 feature extractors and classification heads. |
+| **Backend** | **Librosa 0.10.2** | Music and audio analysis library used for acoustic feature extraction (pitch `F_0`, spectral flatness, rolloff, jitter). |
+| **Backend** | **NumPy 1.26** | Vectorized array computation for signal manipulation and tensor conversion. |
+| **Backend** | **SoundFile 0.12** | Audio file reading and writing interface supporting WAV, FLAC, and raw PCM. |
+| **Backend** | **Pydantic 2.8 & Pydantic Settings** | Data validation, schema enforcement, and environment variable management. |
+| **Backend** | **Python-Multipart** | Form data parser for asynchronous multi-part audio chunk uploads. |
+| **Database / Storage / Cloud** | **Supabase (PostgreSQL 15)** | Managed cloud relational database hosting the `users` table, unique phone indexes, authentication states, and telemetry data. |
+| **Database / Storage / Cloud** | **SQLite 3** | Local client-side embedded database providing zero-latency offline mirroring and resilience against network dropouts. |
+| **Database / Storage / Cloud** | **Docker (Debian 12 Slim)** | Multi-stage container runtime pre-packaging FFmpeg, libsndfile1, and system audio libraries. |
+| **Database / Storage / Cloud** | **Render.com** | Cloud application platform running the containerized FastAPI Python AI backend. |
+| **Database / Storage / Cloud** | **Vercel.com** | Edge cloud CDN hosting the HTTPS React frontend with automatic SSL certification required for mobile hardware microphone permissions. |
 
 ## 4. Deep Learning Core & Dataset Specifications
 
@@ -88,28 +83,13 @@
 
 VoiceGuard AI combines neural latent embeddings with classical digital signal processing (DSP) to prevent false positives:
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 Acoustic Metrics Suite                                 │
-├─────────────────────────┬──────────────────────────────────┬───────────────────────────┤
-│ Feature                 │ Mathematical Definition          │ Human vs AI Baseline      │
-├─────────────────────────┼──────────────────────────────────┼───────────────────────────┤
-│ Fundamental Pitch (F0)  │ YIN autocorrelation algorithm     │ Human: std(F0) > 7.0 Hz   │
-│                         │ over f_min=65Hz, f_max=400Hz     │ AI Clone: std(F0) < 3.0 Hz│
-├─────────────────────────┼──────────────────────────────────┼───────────────────────────┤
-│ Spectral Centroid       │ C = sum(f * S(f)) / sum(S(f))    │ Measures spectral center  │
-│                         │                                  │ of mass / brightness      │
-├─────────────────────────┼──────────────────────────────────┼───────────────────────────┤
-│ Spectral Flatness       │ Geometric Mean / Arithmetic Mean │ Human: < 0.045 (Harmonic) │
-│                         │ of Power Spectrum                │ AI Vocoder: > 0.08 (Noise)│
-├─────────────────────────┼──────────────────────────────────┼───────────────────────────┤
-│ Acoustic Jitter         │ Cycle-to-cycle pitch period      │ Human: 0.7% to 3.8%       │
-│                         │ variation: std(F0) / mean(F0)    │ AI: Unnaturally flat      │
-├─────────────────────────┼──────────────────────────────────┼───────────────────────────┤
-│ Zero Crossing Rate      │ ZCR = sum(|sgn(x[n]) -           │ Measures high-frequency   │
-│                         │ sgn(x[n-1])|) / (2N)             │ unvoiced consonant bounds │
-└─────────────────────────┴──────────────────────────────────┴───────────────────────────┘
-```
+| Feature | Mathematical Definition | Human vs AI Baseline |
+|---|---|---|
+| **Fundamental Pitch (F0)** | YIN autocorrelation algorithm over `f_min = 65 Hz`, `f_max = 400 Hz` | Human: `std(F0) > 7.0 Hz`<br>AI Clone: `std(F0) < 3.0 Hz` |
+| **Spectral Centroid** | `C = sum(f × S(f)) / sum(S(f))` | Measures spectral center of mass / brightness |
+| **Spectral Flatness** | Geometric Mean / Arithmetic Mean of Power Spectrum | Human: `< 0.045` (Harmonic)<br>AI Vocoder: `> 0.08` (Noise) |
+| **Acoustic Jitter** | Cycle-to-cycle pitch period variation: `std(F0) / mean(F0)` | Human: `0.7% to 3.8%`<br>AI: Unnaturally flat |
+| **Zero Crossing Rate** | `ZCR = sum(|sgn(x[n]) - sgn(x[n-1])|) / (2N)` | Measures high-frequency unvoiced consonant bounds |
 
 ---
 
@@ -211,10 +191,19 @@ CREATE TABLE users (
 
 ## 8. REST & WebSocket API Endpoint Specification
 
+| Method | Endpoint | Purpose | Payload |
+|---|---|---|---|
+| **POST** | `/analyze-chunk` | Ingests a single 2.0-second audio slice from an active live phone call. | `file` (`.webm/.wav`), `call_id` (str), `chunk_id` (str), `phone_number` (str) |
+| **POST** | `/analyze-file` | Full audio file forensic analysis for Audio Lab testing. | `file` (`.wav`), `chunk_duration_sec` (float) |
+| **POST** | `/auth/save-call` | Updates live user telemetry, total calls analyzed, and fake calls detected in Supabase. | `user_id`, `email`, `call_id`, `phone_number`, `caller_tag`, `risk_score`, `max_risk_score`, `risk_level`, `classification`, `duration_sec`, `confidence`, `is_blocked`, `timestamp` |
+| **POST** | `/auth/register` & `/auth/login` | Auto-upserting authentication linking user profiles with Supabase PostgreSQL and local SQLite. | Authentication registration/login data |
+| **GET** | `/health` & `/` | Server health check and system status. | None |
+
 ### 1. `POST /analyze-chunk`
 * **Purpose**: Ingests a single 2.0-second audio slice from an active live phone call.
 * **Payload (Multipart Form)**: `file` (.webm/.wav), `call_id` (str), `chunk_id` (str), `phone_number` (str).
 * **Response**:
+
 ```json
 {
   "chunk_id": "chunk_003",

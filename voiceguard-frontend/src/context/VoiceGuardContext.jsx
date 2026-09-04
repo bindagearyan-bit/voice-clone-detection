@@ -518,6 +518,7 @@ export const VoiceGuardProvider = ({ children }) => {
       modelUsed: summaryData.modelUsed,
       indicators: summaryData.indicators,
       safetyWarning: summaryData.safetyWarning?.points?.join(' ') || null,
+      chunks: summaryData.chunksTimeline || [],
     };
     
     setCallHistory((prev) => {
