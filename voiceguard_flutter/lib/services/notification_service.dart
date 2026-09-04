@@ -57,7 +57,7 @@ class NotificationService {
       styleInformation: BigTextStyleInformation(
         isHigh 
           ? '⚠️ HIGH SPOOF RISK: $riskScore% • Synthetic AI Voice Detected!\n$reason'
-          : '🟢 SAFE CALL: $riskScore% Spoof Risk • Natural Human Voice Verified\n$reason',
+          : '🟢 SAFE CALL: $riskScore% Spoof Risk • Natural Human rVoice Verified\n$reason',
         contentTitle: '🛡️ VoiceGuard Shield • $callerName ($phoneNumber)',
       ),
       actions: <AndroidNotificationAction>[

@@ -123,7 +123,11 @@ class ProtectedCallScreen extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               provider.endCall();
-                              Navigator.pop(context);
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              } else {
+                                provider.setTabIndex(0);
+                              }
                             },
                             borderRadius: BorderRadius.circular(40),
                             child: Container(
@@ -169,7 +173,11 @@ class ProtectedCallScreen extends StatelessWidget {
                 onDismiss: () => provider.closeHighRiskModal(),
                 onBlock: () {
                   provider.endCall(isBlocked: true);
-                  Navigator.pop(context);
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  } else {
+                    provider.setTabIndex(0);
+                  }
                 },
               ),
           ],
