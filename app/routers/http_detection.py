@@ -23,6 +23,7 @@ async def analyze_chunk(
     call_id: str = Form(...),
     chunk_id: str = Form(...),
     phone_number: str = Form(...),
+    caller_name: Optional[str] = Form(None),
     file: UploadFile = File(...)
 ):
     """
@@ -55,6 +56,7 @@ async def analyze_chunk(
                     "call_id": call_id,
                     "chunk_id": chunk_id,
                     "phone_number": phone_number,
+                    "caller_name": caller_name or "Contact Call",
                     "risk_score": result["risk_score"],
                     "risk_level": result["risk_level"],
                     "color": result["color"],
@@ -65,6 +67,7 @@ async def analyze_chunk(
                     "created_at": timestamp_str
                 }
                 supabase.table("call_logs").insert(log_data).execute()
+                logger.info(f"Logged call chunk '{chunk_id}' for {phone_number} to Supabase call_logs")
             except Exception as db_err:
                 logger.error(f"Failed to log chunk to Supabase call_logs: {db_err}")
 

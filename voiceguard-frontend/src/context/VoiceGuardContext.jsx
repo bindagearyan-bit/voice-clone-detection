@@ -662,6 +662,7 @@ export const VoiceGuardProvider = ({ children }) => {
               formData.append('call_id', activeCall.id || `live_${Date.now()}`);
               formData.append('chunk_id', `chunk_${String(currentSeq).padStart(3, '0')}`);
               formData.append('phone_number', activeCall.callerNumber || '+91 98234 11092');
+              formData.append('caller_name', activeCall.callerLabel || activeCall.callerNumber || 'Contact Call');
               formData.append('file', e.data, `live_chunk_${currentSeq}.webm`);
 
               try {

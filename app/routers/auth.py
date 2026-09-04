@@ -436,22 +436,26 @@ async def save_call_record(req: SaveCallRequest):
                 }).eq("id", u_id).execute()
                 logger.info(f"Updated Supabase user '{u_id}' statistics: total_calls={curr_total + 1}, fake_calls={new_fakes}")
             
-            # Also attempt to insert into call_logs / calls if table exists
+            # Also insert full call record into call_logs and call_sessions
             try:
                 call_row = {
                     "id": str(uuid.uuid4()),
                     "call_id": req.call_id,
-                    "caller_phone": req.phone_number,
-                    "caller_name": req.caller_tag,
+                    "chunk_id": "summary",
+                    "phone_number": req.phone_number,
+                    "caller_name": req.caller_tag or "Contact / Outbound Call",
                     "risk_score": req.max_risk_score,
                     "risk_level": req.risk_level,
-                    "classification": req.classification,
-                    "duration_sec": req.duration_sec,
+                    "color": "RED" if req.risk_level == "HIGH" else "YELLOW" if req.risk_level == "MODERATE" else "GREEN",
+                    "is_fake": req.risk_level == "HIGH" or req.max_risk_score >= 75,
+                    "reason": req.classification,
+                    "model_used": "VoiceGuard-v1.2",
                     "created_at": now_iso
                 }
                 supabase.table("call_logs").insert(call_row).execute()
-            except Exception:
-                pass  # Optional auxiliary table
+                logger.info(f"Saved complete call session to Supabase call_logs for {req.phone_number} ({req.caller_tag})")
+            except Exception as log_err:
+                logger.warning(f"Auxiliary call_logs insert notice: {log_err}")
         except Exception as sb_err:
             logger.warning(f"Supabase save_call warning: {sb_err}")
 
