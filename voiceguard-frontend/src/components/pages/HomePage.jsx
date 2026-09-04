@@ -142,39 +142,43 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* 4 Statistics Cards */}
+      {/* 4 Statistics Cards (Dynamic Live Telemetry) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Stat 1: Calls Monitored Today */}
         <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-card-subtle space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono text-slate-500 font-bold uppercase">
-              Calls Monitored Today
+              Calls Monitored
             </span>
             <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
               <PhoneCall className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-slate-900 font-mono">14</span>
+            <span className="text-3xl font-extrabold text-slate-900 font-mono">
+              {callHistory.length}
+            </span>
             <span className="text-xs font-mono font-bold text-emerald-600 flex items-center gap-0.5">
-              <TrendingUp className="w-3 h-3" /> +8% vs yesterday
+              <TrendingUp className="w-3 h-3" /> Live Synced
             </span>
           </div>
-          <p className="text-[11px] text-slate-400">All unknown cellular & WebRTC streams</p>
+          <p className="text-[11px] text-slate-400">Total cellular & WebRTC protected calls</p>
         </div>
 
         {/* Stat 2: Threats Detected */}
         <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-card-subtle space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono text-slate-500 font-bold uppercase">
-              Threats Detected
+              Threats Intercepted
             </span>
             <div className="p-2 rounded-xl bg-red-50 text-red-600">
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-red-600 font-mono">3</span>
+            <span className="text-3xl font-extrabold text-red-600 font-mono">
+              {callHistory.filter(c => c.riskLevel === 'HIGH' || c.riskScore >= 75).length}
+            </span>
             <span className="text-xs font-mono font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full">
               High Spoof Risk
             </span>
@@ -193,7 +197,9 @@ export const HomePage = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-slate-900 font-mono">342</span>
+            <span className="text-3xl font-extrabold text-slate-900 font-mono">
+              {callHistory.reduce((acc, c) => acc + (c.chunksAnalyzed || c.chunks?.length || 1), 0)}
+            </span>
             <span className="text-xs font-mono text-slate-500">2-second windows</span>
           </div>
           <p className="text-[11px] text-slate-400">16kHz audio spectral analysis</p>
@@ -212,7 +218,7 @@ export const HomePage = () => {
           <div className="flex items-baseline gap-2">
             <span className="text-xl font-extrabold text-emerald-700 font-mono">100% ACTIVE</span>
           </div>
-          <p className="text-[11px] text-slate-400">VoiceGuard-v1.2 Neural Core</p>
+          <p className="text-[11px] text-slate-400">VoiceGuard-v1.2 Neural Core (~65ms)</p>
         </div>
       </div>
 
