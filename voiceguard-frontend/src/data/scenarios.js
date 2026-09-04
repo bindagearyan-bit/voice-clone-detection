@@ -1,9 +1,9 @@
 export const SCENARIOS = [
   {
     id: "sbi_kyc_scam",
-    title: "PD (+91 9226793292) — Suspected Bank KYC Spoof",
+    title: "PD (+91 9226793292)",
     tag: "Banking Scam",
-    callerName: "PD (Claims: SBI Card Security)",
+    callerName: "PD",
     callerNumber: "+91 9226793292",
     claimedIdentity: "SBI Credit Card Division",
     targetVulnerability: "OTP / Credit Card CVV Phishing",
@@ -90,9 +90,9 @@ export const SCENARIOS = [
   },
   {
     id: "kidnap_ransom_clone",
-    title: "KUSH (+91 9022831590) — Potential Voice Clone",
+    title: "KUSH (+91 9022831590)",
     tag: "Voice Clone Attack",
-    callerName: "KUSH (+91 9022831590)",
+    callerName: "KUSH",
     callerNumber: "+91 9022831590",
     claimedIdentity: "Cloned Relative / College Friend",
     targetVulnerability: "Urgent UPI Fund Transfer Extortion",
@@ -160,7 +160,7 @@ export const SCENARIOS = [
   },
   {
     id: "traffic_challan_robocall",
-    title: "Unknown Caller (+91 88002 91100) — Automated Robocall",
+    title: "Unknown Caller (+91 88002 91100)",
     tag: "Robocall Threat",
     callerName: "Unknown (+91 88002 91100)",
     callerNumber: "+91 88002 91100",
@@ -230,7 +230,7 @@ export const SCENARIOS = [
   },
   {
     id: "real_friend_call",
-    title: "AARADHYA (+91 9004352394) — Natural Speech",
+    title: "AARADHYA (+91 9004352394)",
     tag: "Legitimate Call",
     callerName: "AARADHYA",
     callerNumber: "+91 9004352394",

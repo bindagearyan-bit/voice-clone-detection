@@ -1,15 +1,9 @@
 import React from 'react';
 import { 
   ShieldCheck, 
-  Bell, 
   Lock, 
-  Sliders, 
-  Server, 
   Trash2, 
-  RotateCcw, 
-  Info,
-  Smartphone,
-  Cpu
+  RotateCcw
 } from 'lucide-react';
 import { useVoiceGuard } from '../../context/VoiceGuardContext';
 
@@ -38,7 +32,7 @@ export const SettingsPage = () => {
             VoiceGuard Settings
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            Customize real-time voice monitoring thresholds, alerts, and privacy rules
+            Customize real-time voice monitoring thresholds and privacy retention rules
           </p>
         </div>
 
@@ -64,185 +58,115 @@ export const SettingsPage = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Aligned 2-Section Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         {/* Section 1: PROTECTION */}
-        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-card-subtle space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <ShieldCheck className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold text-slate-900 font-mono uppercase tracking-wider">
-              Real-Time Voice Protection
-            </h3>
-          </div>
-
-          <div className="space-y-3.5">
-            {/* Toggle 1: Real-time monitoring */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900">Real-Time Voice Monitoring</h4>
-                <p className="text-[11px] text-slate-500">Automatically slice incoming audio into 2s chunks</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={settings.realtimeMonitoring}
-                onChange={(e) => updateSetting('realtimeMonitoring', e.target.checked)}
-                className="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-card-subtle flex flex-col justify-between space-y-4">
+          <div>
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <ShieldCheck className="w-5 h-5 text-blue-600" />
+              <h3 className="text-sm font-bold text-slate-900 font-mono uppercase tracking-wider">
+                Real-Time Voice Protection
+              </h3>
             </div>
 
-            {/* Toggle 2: Unknown Caller Protection */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900">Unknown Caller Auto-Scan</h4>
-                <p className="text-[11px] text-slate-500">Prioritize calls from unregistered numbers</p>
+            <div className="space-y-4">
+              {/* Toggle 1: Real-time monitoring */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Real-Time Voice Monitoring</h4>
+                  <p className="text-[11px] text-slate-500">Automatically slice incoming audio into 2s chunks</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={settings.realtimeMonitoring}
+                  onChange={(e) => updateSetting('realtimeMonitoring', e.target.checked)}
+                  className="w-4 h-4 accent-blue-600 cursor-pointer"
+                />
               </div>
-              <input
-                type="checkbox"
-                checked={settings.unknownCallerProtection}
-                onChange={(e) => updateSetting('unknownCallerProtection', e.target.checked)}
-                className="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
-            </div>
 
-            {/* Toggle 3: High-Risk Alerts */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900">Emergency Threat Overlay</h4>
-                <p className="text-[11px] text-slate-500">Display full warning screen on high spoof score</p>
+              {/* Toggle 2: Unknown Caller Protection */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Unknown Caller Auto-Scan</h4>
+                  <p className="text-[11px] text-slate-500">Prioritize calls from unregistered numbers</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={settings.unknownCallerProtection}
+                  onChange={(e) => updateSetting('unknownCallerProtection', e.target.checked)}
+                  className="w-4 h-4 accent-blue-600 cursor-pointer"
+                />
               </div>
-              <input
-                type="checkbox"
-                checked={settings.highRiskAlerts}
-                onChange={(e) => updateSetting('highRiskAlerts', e.target.checked)}
-                className="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
-            </div>
 
-            {/* Slider: Consecutive Threshold */}
-            <div className="pt-2 border-t border-slate-100 space-y-1.5">
-              <div className="flex justify-between text-xs font-mono">
-                <span className="text-slate-600">Consecutive High-Risk Chunks:</span>
-                <span className="font-bold text-blue-600">{settings.consecutiveHighRiskThreshold} Chunks (6s)</span>
+              {/* Toggle 3: High-Risk Alerts */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Emergency Threat Overlay</h4>
+                  <p className="text-[11px] text-slate-500">Display full warning screen on high spoof score</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={settings.highRiskAlerts}
+                  onChange={(e) => updateSetting('highRiskAlerts', e.target.checked)}
+                  className="w-4 h-4 accent-blue-600 cursor-pointer"
+                />
               </div>
-              <input
-                type="range"
-                min="2"
-                max="6"
-                value={settings.consecutiveHighRiskThreshold}
-                onChange={(e) => updateSetting('consecutiveHighRiskThreshold', Number(e.target.value))}
-                className="w-full accent-blue-600 cursor-pointer"
-              />
             </div>
           </div>
-        </div>
 
-        {/* Section 2: NOTIFICATIONS */}
-        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-card-subtle space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <Bell className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold text-slate-900 font-mono uppercase tracking-wider">
-              Alerts & Sensory Feedback
-            </h3>
-          </div>
-
-          <div className="space-y-3.5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900">Push Notifications</h4>
-                <p className="text-[11px] text-slate-500">Receive alerts when calls finish or threats are found</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={settings.pushNotifications}
-                onChange={(e) => updateSetting('pushNotifications', e.target.checked)}
-                className="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
+          {/* Slider: Consecutive Threshold */}
+          <div className="pt-3 border-t border-slate-100 space-y-1.5">
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-slate-600">Consecutive High-Risk Chunks:</span>
+              <span className="font-bold text-blue-600">{settings.consecutiveHighRiskThreshold} Chunks (6s)</span>
             </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900">Audible Warning Chimes</h4>
-                <p className="text-[11px] text-slate-500">Play subtle warning tones in earpiece on high risk</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={settings.warningSound}
-                onChange={(e) => updateSetting('warningSound', e.target.checked)}
-                className="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900">Haptic Vibration Pulse</h4>
-                <p className="text-[11px] text-slate-500">Vibrate phone on potential synthetic voice</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={settings.hapticVibration}
-                onChange={(e) => updateSetting('hapticVibration', e.target.checked)}
-                className="w-4 h-4 accent-blue-600 cursor-pointer"
-              />
-            </div>
+            <input
+              type="range"
+              min="2"
+              max="6"
+              value={settings.consecutiveHighRiskThreshold}
+              onChange={(e) => updateSetting('consecutiveHighRiskThreshold', Number(e.target.value))}
+              className="w-full accent-blue-600 cursor-pointer"
+            />
           </div>
         </div>
 
-        {/* Section 3: PRIVACY & DATA */}
-        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-card-subtle space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <Lock className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold text-slate-900 font-mono uppercase tracking-wider">
-              Privacy & Audio Retention
-            </h3>
+        {/* Section 2: PRIVACY & DATA */}
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-card-subtle flex flex-col justify-between space-y-4">
+          <div>
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <Lock className="w-5 h-5 text-blue-600" />
+              <h3 className="text-sm font-bold text-slate-900 font-mono uppercase tracking-wider">
+                Privacy & Audio Retention
+              </h3>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-900 block">Audio Data Policy</label>
+                <p className="text-[11px] text-slate-500">Choose how live audio frames are persisted during sessions</p>
+                <select
+                  value={settings.audioRetention}
+                  onChange={(e) => updateSetting('audioRetention', e.target.value)}
+                  className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500"
+                >
+                  <option value="hashes_only">Store Cryptographic Hashes Only (Recommended)</option>
+                  <option value="do_not_store">Zero Storage (Discard audio immediately)</option>
+                  <option value="7_days">Retain Raw WAV for 7 Days (Forensics)</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-900 block">Audio Data Policy</label>
-              <select
-                value={settings.audioRetention}
-                onChange={(e) => updateSetting('audioRetention', e.target.value)}
-                className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800"
-              >
-                <option value="hashes_only">Store Cryptographic Hashes Only (Recommended)</option>
-                <option value="do_not_store">Zero Storage (Discard audio immediately)</option>
-                <option value="7_days">Retain Raw WAV for 7 Days (Forensics)</option>
-              </select>
-            </div>
-
-            <div className="pt-2">
-              <button
-                onClick={clearHistory}
-                className="w-full py-2.5 px-4 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete Call History Database</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 4: SYSTEM & TELEMETRY */}
-        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-card-subtle space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <Server className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold text-slate-900 font-mono uppercase tracking-wider">
-              System & Model Information
-            </h3>
-          </div>
-
-          <div className="space-y-2 text-xs font-mono text-slate-600">
-            <div className="flex justify-between p-2 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-slate-500">Model Pipeline:</span>
-              <span className="font-bold text-slate-900">VoiceGuard-v1.2 (Neural Core)</span>
-            </div>
-            <div className="flex justify-between p-2 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-slate-500">WebSocket Endpoint:</span>
-              <span className="font-bold text-blue-600">ws://localhost:8000/ws/audio-stream</span>
-            </div>
-            <div className="flex justify-between p-2 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-slate-500">Version:</span>
-              <span className="font-bold text-slate-900">v1.2.0-SIH-Edition</span>
-            </div>
+          <div className="pt-3 border-t border-slate-100">
+            <button
+              onClick={clearHistory}
+              className="w-full py-2.5 px-4 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Delete Call History Database</span>
+            </button>
           </div>
         </div>
       </div>

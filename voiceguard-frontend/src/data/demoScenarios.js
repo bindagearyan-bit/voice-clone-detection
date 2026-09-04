@@ -6,9 +6,9 @@
 export const DEMO_SCENARIOS = [
   {
     id: 'sbi_impersonation',
-    title: 'PD (+91 9226793292) — Suspected Bank KYC Spoof',
+    title: 'PD (+91 9226793292)',
     callerNumber: '+91 9226793292',
-    callerLabel: 'PD (Suspected Bank KYC Spoof)',
+    callerLabel: 'PD',
     expectedRiskLevel: 'HIGH',
     finalRiskScore: 89,
     confidence: 92,
@@ -86,9 +86,9 @@ export const DEMO_SCENARIOS = [
   },
   {
     id: 'voice_clone_ransom',
-    title: 'KUSH (+91 9022831590) — Potential Voice Clone',
+    title: 'KUSH (+91 9022831590)',
     callerNumber: '+91 9022831590',
-    callerLabel: 'KUSH (Potential Voice Clone)',
+    callerLabel: 'KUSH',
     expectedRiskLevel: 'HIGH',
     finalRiskScore: 94,
     confidence: 96,
@@ -140,9 +140,9 @@ export const DEMO_SCENARIOS = [
   },
   {
     id: 'moderate_telemarketer',
-    title: 'Unknown Caller (+91 88002 91100) — Automated Robocall',
+    title: 'Unknown (+91 88002 91100)',
     callerNumber: '+91 88002 91100',
-    callerLabel: 'Unknown Caller',
+    callerLabel: 'Unknown',
     expectedRiskLevel: 'MODERATE',
     finalRiskScore: 65,
     confidence: 0.88,
@@ -191,9 +191,9 @@ export const DEMO_SCENARIOS = [
   },
   {
     id: 'genuine_human_call',
-    title: 'AARADHYA (+91 9004352394) — Natural Speech',
+    title: 'AARADHYA (+91 9004352394)',
     callerNumber: '+91 9004352394',
-    callerLabel: 'AARADHYA (Verified Contact)',
+    callerLabel: 'AARADHYA',
     expectedRiskLevel: 'LOW',
     finalRiskScore: 15,
     confidence: 94,

@@ -872,10 +872,10 @@ export const VoiceGuardProvider = ({ children }) => {
       }
     };
 
-    // First chunk immediately after 600ms latency
+    // First chunk evaluation after the full 2-second audio frame window completes (starts strictly from 0%)
     const initialTimeout = setTimeout(() => {
       processChunk(0);
-    }, 600);
+    }, 2000);
 
     // Continuous 2-second intervals
     chunkStreamRef.current = setInterval(() => {
