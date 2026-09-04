@@ -15,6 +15,7 @@ import { HighRiskAlertModal } from './components/common/HighRiskAlertModal';
 import { CallSummaryModal } from './components/common/CallSummaryModal';
 import { CallDetailModal } from './components/common/CallDetailModal';
 import { PermissionsModal } from './components/common/PermissionsModal';
+import { FloatingCallNotificationBar } from './components/common/FloatingCallNotificationBar';
 import { ShieldCheck, Lock, ExternalLink } from 'lucide-react';
 
 const AppContent = () => {
@@ -64,7 +65,8 @@ const AppContent = () => {
           {renderCurrentPage()}
         </main>
 
-        {/* Global Modals & Drawers */}
+        {/* Global Floating Call Status Overlay & Modals */}
+        <FloatingCallNotificationBar />
         <PermissionsModal />
         <HighRiskAlertModal />
         <CallSummaryModal />
