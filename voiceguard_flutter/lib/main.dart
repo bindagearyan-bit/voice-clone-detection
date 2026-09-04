@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/voiceguard_provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/main_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ class VoiceGuardApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: const Color(0xFFF8FAFC),
         ),
-        home: const HomeScreen(),
+        home: const MainShell(),
       ),
     );
   }

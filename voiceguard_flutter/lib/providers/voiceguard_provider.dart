@@ -5,12 +5,53 @@ import '../models/call_session.dart';
 import '../models/contact_model.dart';
 import '../models/notification_model.dart';
 import '../services/api_service.dart';
-import '../services/audio_service.dart';
 import '../services/notification_service.dart';
 
 class VoiceGuardProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
   final NotificationService _notificationService = NotificationService();
+
+  // Navigation state
+  int _currentTabIndex = 0;
+  int get currentTabIndex => _currentTabIndex;
+
+  void setTabIndex(int index) {
+    _currentTabIndex = index;
+    notifyListeners();
+  }
+
+  void navigateToTab(String route) {
+    switch (route) {
+      case '/home':
+        _currentTabIndex = 0;
+        break;
+      case '/audiolab':
+      case '/upload':
+        _currentTabIndex = 1;
+        break;
+      case '/dialer':
+        _currentTabIndex = 2;
+        break;
+      case '/calls':
+        _currentTabIndex = 3;
+        break;
+      case '/notifications':
+        _currentTabIndex = 4;
+        break;
+      case '/history':
+        _currentTabIndex = 5;
+        break;
+      case '/settings':
+        _currentTabIndex = 6;
+        break;
+      case '/about':
+        _currentTabIndex = 7;
+        break;
+      default:
+        _currentTabIndex = 0;
+    }
+    notifyListeners();
+  }
 
   // Call State
   String _callState = 'idle'; // 'idle', 'incoming', 'monitoring', 'ended'
@@ -55,18 +96,153 @@ class VoiceGuardProvider extends ChangeNotifier {
   ];
   List<ContactModel> get contacts => _contacts;
 
-  // Call History
-  final List<CallSession> _history = [];
+  // Call History (Seeded with initial sessions matching the web app)
+  final List<CallSession> _history = [
+    CallSession(
+      callId: 'call_20250118_143052',
+      phoneNumber: '+91 98234 11092',
+      callerTag: 'Unknown (Claims Bank Security)',
+      averageRiskScore: 89,
+      maxRiskScore: 92,
+      finalRiskLevel: 'HIGH',
+      classification: 'AI Voice Suspected',
+      statusLabel: 'HIGH SPOOF RISK',
+      durationSec: 44,
+      chunksAnalyzed: 6,
+      confidence: 0.94,
+      modelUsed: 'VoiceGuard-v1.2 (Neural Core)',
+      timestamp: 'Today, 02:30 PM',
+      isBlocked: true,
+      chunks: [
+        CallChunk(
+          chunkId: 'chunk_001',
+          chunkNumber: 1,
+          riskScore: 86,
+          riskLevel: 'HIGH',
+          color: 'RED',
+          confidence: 0.92,
+          reason: 'Neural vocoder phase discontinuity & flat pitch contour detected',
+          evidence: '16kHz Audio Frame (1 x 2s)',
+          isFake: true,
+          timeRange: '0–2s',
+        ),
+        CallChunk(
+          chunkId: 'chunk_002',
+          chunkNumber: 2,
+          riskScore: 92,
+          riskLevel: 'HIGH',
+          color: 'RED',
+          confidence: 0.95,
+          reason: 'Missing natural glottal pulses and zero micro-tremors in vocal tract',
+          evidence: '16kHz Audio Frame (2 x 2s)',
+          isFake: true,
+          timeRange: '2–4s',
+        ),
+      ],
+    ),
+    CallSession(
+      callId: 'call_20250118_112015',
+      phoneNumber: '199',
+      callerTag: 'Airtel Automated IVR Service',
+      averageRiskScore: 91,
+      maxRiskScore: 94,
+      finalRiskLevel: 'HIGH',
+      classification: 'Automated Bot / IVR Detected',
+      statusLabel: 'HIGH SPOOF RISK',
+      durationSec: 28,
+      chunksAnalyzed: 5,
+      confidence: 0.98,
+      modelUsed: 'VoiceGuard-v1.2 (Neural Core)',
+      timestamp: 'Today, 11:20 AM',
+      isBlocked: false,
+      chunks: [],
+    ),
+    CallSession(
+      callId: 'call_20250117_184500',
+      phoneNumber: '+91 9226793292',
+      callerTag: 'PD',
+      averageRiskScore: 11,
+      maxRiskScore: 14,
+      finalRiskLevel: 'LOW',
+      classification: 'Authentic Human Voice',
+      statusLabel: 'LOW SPOOF RISK',
+      durationSec: 65,
+      chunksAnalyzed: 8,
+      confidence: 0.99,
+      modelUsed: 'VoiceGuard-v1.2 (Neural Core)',
+      timestamp: 'Yesterday, 06:45 PM',
+      isBlocked: false,
+      chunks: [],
+    ),
+    CallSession(
+      callId: 'call_20250117_151020',
+      phoneNumber: '+91 9022831590',
+      callerTag: 'KUSH',
+      averageRiskScore: 9,
+      maxRiskScore: 12,
+      finalRiskLevel: 'LOW',
+      classification: 'Authentic Human Voice',
+      statusLabel: 'LOW SPOOF RISK',
+      durationSec: 52,
+      chunksAnalyzed: 6,
+      confidence: 0.99,
+      modelUsed: 'VoiceGuard-v1.2 (Neural Core)',
+      timestamp: 'Yesterday, 03:10 PM',
+      isBlocked: false,
+      chunks: [],
+    ),
+  ];
   List<CallSession> get history => _history;
 
   // Notifications
-  final List<SecurityNotification> _notifications = [];
+  final List<SecurityNotification> _notifications = [
+    SecurityNotification(
+      id: 'notif_001',
+      severity: 'HIGH',
+      title: 'Deepfake Voice Intercepted',
+      message: 'Incoming call from +91 98234 11092 was flagged with 89% AI spoof probability. Neural vocoder signatures detected.',
+      timestamp: 'Today, 02:30 PM',
+      isRead: false,
+      callId: 'call_20250118_143052',
+    ),
+    SecurityNotification(
+      id: 'notif_002',
+      severity: 'HIGH',
+      title: 'Automated Bot Stream Flagged',
+      message: 'Call to 199 (Airtel IVR) was classified as synthetic voice (91% confidence).',
+      timestamp: 'Today, 11:20 AM',
+      isRead: false,
+      callId: 'call_20250118_112015',
+    ),
+    SecurityNotification(
+      id: 'notif_003',
+      severity: 'LOW',
+      title: 'Shield Protection Active',
+      message: 'VoiceGuard 16kHz Deep Learning Engine running in background with ~65ms latency.',
+      timestamp: 'Yesterday, 09:00 AM',
+      isRead: true,
+    ),
+  ];
   List<SecurityNotification> get notifications => _notifications;
+
+  int get unreadNotificationCount => _notifications.where((n) => !n.isRead).length;
 
   int _chunkSeq = 0;
 
   VoiceGuardProvider() {
     _notificationService.initialize();
+  }
+
+  void markAllNotificationsRead() {
+    for (var n in _notifications) {
+      n.isRead = true;
+    }
+    notifyListeners();
+  }
+
+  void clearNotifications() {
+    _notifications.clear();
+    notifyListeners();
   }
 
   // Start Protected Call (Smart IVR vs Friend Detection)
@@ -107,6 +283,8 @@ class VoiceGuardProvider extends ChangeNotifier {
         : 'Microphone shield active • Authentic human vocal resonance verified';
     _isHighRiskModalOpen = isAutomatedIVR;
 
+    // Switch to active call tab
+    _currentTabIndex = 3;
     notifyListeners();
 
     // Start timer
@@ -228,6 +406,21 @@ class VoiceGuardProvider extends ChangeNotifier {
 
     _lastSummary = session;
     _history.insert(0, session);
+
+    // Add security notification if high risk
+    if (finalLevel == 'HIGH') {
+      _notifications.insert(
+        0,
+        SecurityNotification(
+          id: 'notif_${DateTime.now().millisecondsSinceEpoch}',
+          severity: 'HIGH',
+          title: 'Suspicious AI Voice Session Logged',
+          message: 'Call with $_activeCallerName ($_activeCallerNumber) had peak spoof score of $maxScore%.',
+          timestamp: 'Just now',
+          callId: session.callId,
+        ),
+      );
+    }
 
     // Save to Supabase Cloud Database
     _apiService.saveCallSession(session);
