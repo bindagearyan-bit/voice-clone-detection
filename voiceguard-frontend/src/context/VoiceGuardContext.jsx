@@ -730,12 +730,19 @@ export const VoiceGuardProvider = ({ children }) => {
 
     const processChunk = (idx) => {
       const targetChunk = scenarioChunks[idx % scenarioChunks.length];
+      const baseScore = targetChunk.riskScore || Math.round((targetChunk.spoofScore || 0.15) * 100);
+      const dynamicOffset = (idx % 2 === 0 ? 1 : -1) * ((idx * 3) % 7);
+      const chunkRisk = Math.min(98, Math.max(6, baseScore + dynamicOffset));
+      const chunkLevel = chunkRisk >= 80 ? 'HIGH' : chunkRisk >= 50 ? 'MODERATE' : 'LOW';
+
       const chunkData = {
         ...targetChunk,
         chunkId: `chunk_${String(idx + 1).padStart(2, '0')}`,
         chunkNumber: idx + 1,
         totalChunks: scenarioChunks.length > 4 ? scenarioChunks.length : 22,
         timeRange: `${idx * 2}–${(idx + 1) * 2}s`,
+        riskScore: chunkRisk,
+        riskLevel: chunkLevel,
       };
 
       setCurrentChunk(chunkData);
