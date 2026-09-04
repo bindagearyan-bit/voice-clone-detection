@@ -1,10 +1,10 @@
 export const SCENARIOS = [
   {
     id: "sbi_kyc_scam",
-    title: "SBI Bank KYC Fraud (AI Cloned Voice)",
+    title: "PD (+91 9226793292) — Suspected Bank KYC Spoof",
     tag: "Banking Scam",
-    callerName: "Unknown (Claims: SBI Card Security)",
-    callerNumber: "+91 98234 11092",
+    callerName: "PD (Claims: SBI Card Security)",
+    callerNumber: "+91 9226793292",
     claimedIdentity: "SBI Credit Card Division",
     targetVulnerability: "OTP / Credit Card CVV Phishing",
     expectedOutcome: "HIGH RISK (AI Voice Detected)",
@@ -90,10 +90,10 @@ export const SCENARIOS = [
   },
   {
     id: "kidnap_ransom_clone",
-    title: "AI Voice Clone Emergency / Ransom Scam",
+    title: "KUSH (+91 9022831590) — Potential Voice Clone",
     tag: "Voice Clone Attack",
-    callerName: "Unknown (+91 70112 84920)",
-    callerNumber: "+91 70112 84920",
+    callerName: "KUSH (+91 9022831590)",
+    callerNumber: "+91 9022831590",
     claimedIdentity: "Cloned Relative / College Friend",
     targetVulnerability: "Urgent UPI Fund Transfer Extortion",
     expectedOutcome: "CRITICAL RISK (Deepfake Voice)",
@@ -160,7 +160,7 @@ export const SCENARIOS = [
   },
   {
     id: "traffic_challan_robocall",
-    title: "Traffic Police / Digital Arrest Threat",
+    title: "Unknown Caller (+91 88002 91100) — Automated Robocall",
     tag: "Robocall Threat",
     callerName: "Unknown (+91 88002 91100)",
     callerNumber: "+91 88002 91100",
@@ -230,11 +230,11 @@ export const SCENARIOS = [
   },
   {
     id: "real_friend_call",
-    title: "Genuine Human Caller (Normal Friend)",
+    title: "AARADHYA (+91 9004352394) — Natural Speech",
     tag: "Legitimate Call",
-    callerName: "Aarav Sharma",
-    callerNumber: "+91 98110 54321",
-    claimedIdentity: "College Friend",
+    callerName: "AARADHYA",
+    callerNumber: "+91 9004352394",
+    claimedIdentity: "Verified Friend",
     targetVulnerability: "None (Safe)",
     expectedOutcome: "LOW RISK (Genuine Human Voice)",
     description: "Authentic human conversation with organic diaphragm breath intakes, natural micro-tremor, and variable pitch contour.",
@@ -299,3 +299,4 @@ export const SCENARIOS = [
     ]
   }
 ];
+

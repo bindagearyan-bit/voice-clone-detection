@@ -6,9 +6,9 @@
 export const DEMO_SCENARIOS = [
   {
     id: 'sbi_impersonation',
-    title: 'Unknown Caller (+91 98234 11092) — Suspected Bank KYC Spoof',
-    callerNumber: '+91 98234 11092',
-    callerLabel: 'Unknown Caller',
+    title: 'PD (+91 9226793292) — Suspected Bank KYC Spoof',
+    callerNumber: '+91 9226793292',
+    callerLabel: 'PD (Suspected Bank KYC Spoof)',
     expectedRiskLevel: 'HIGH',
     finalRiskScore: 89,
     confidence: 92,
@@ -86,9 +86,9 @@ export const DEMO_SCENARIOS = [
   },
   {
     id: 'voice_clone_ransom',
-    title: 'Unknown Caller (+91 70112 84920) — Potential Voice Clone',
-    callerNumber: '+91 70112 84920',
-    callerLabel: 'Unknown Caller',
+    title: 'KUSH (+91 9022831590) — Potential Voice Clone',
+    callerNumber: '+91 9022831590',
+    callerLabel: 'KUSH (Potential Voice Clone)',
     expectedRiskLevel: 'HIGH',
     finalRiskScore: 94,
     confidence: 96,
@@ -191,9 +191,9 @@ export const DEMO_SCENARIOS = [
   },
   {
     id: 'genuine_human_call',
-    title: 'Unknown Caller (+91 98110 54321) — Natural Speech',
-    callerNumber: '+91 98110 54321',
-    callerLabel: 'Unknown Caller',
+    title: 'AARADHYA (+91 9004352394) — Natural Speech',
+    callerNumber: '+91 9004352394',
+    callerLabel: 'AARADHYA (Verified Contact)',
     expectedRiskLevel: 'LOW',
     finalRiskScore: 15,
     confidence: 94,
@@ -237,3 +237,4 @@ export const DEMO_SCENARIOS = [
     ]
   }
 ];
+
