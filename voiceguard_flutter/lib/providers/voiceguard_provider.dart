@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/call_chunk.dart';
 import '../models/call_session.dart';
@@ -11,7 +10,6 @@ import '../services/notification_service.dart';
 
 class VoiceGuardProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
-  final AudioService _audioService = AudioService();
   final NotificationService _notificationService = NotificationService();
 
   // Call State

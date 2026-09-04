@@ -18,8 +18,8 @@ class ProtectedCallScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<VoiceGuardProvider>();
 
-    return WillPopScope(
-      onWillPop: () async => false, // Prevent accidental back press during active call
+    return PopScope(
+      canPop: false, // Prevent accidental back press during active call
       child: Scaffold(
         backgroundColor: const Color(0xFF0F172A),
         body: Stack(
@@ -134,7 +134,7 @@ class ProtectedCallScreen extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFDC2626).withOpacity(0.4),
+                                    color: const Color(0xFFDC2626).withValues(alpha: 0.4),
                                     blurRadius: 20,
                                     offset: const Offset(0, 8),
                                   ),

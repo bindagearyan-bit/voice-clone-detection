@@ -18,7 +18,7 @@ class _AudioLabScreenState extends State<AudioLabScreen> {
   String? _selectedSample;
   bool _isPlaying = false;
   bool _isAnalyzing = false;
-  String _terminalLogs = 'VoiceGuard Forensic Audio Inspection Terminal\nReady. Select a sample or upload audio file to inspect.\n' + '=' * 60;
+  String _terminalLogs = 'VoiceGuard Forensic Audio Inspection Terminal\nReady. Select a sample or upload audio file to inspect.\n${'=' * 60}';
 
   final List<Map<String, dynamic>> _samples = [
     {
@@ -172,7 +172,7 @@ class _AudioLabScreenState extends State<AudioLabScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2563EB).withOpacity(0.2),
+                      color: const Color(0xFF2563EB).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(Icons.science, color: Color(0xFF38BDF8), size: 24),
@@ -239,7 +239,7 @@ class _AudioLabScreenState extends State<AudioLabScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.between,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -283,7 +283,7 @@ class _AudioLabScreenState extends State<AudioLabScreen> {
 
             // Forensic Terminal Box
             Row(
-              mainAxisAlignment: MainAxisAlignment.between,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
                   'TERMINAL FORENSICS',

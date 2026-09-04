@@ -37,7 +37,7 @@ class RiskMeter extends StatelessWidget {
             child: CircularProgressIndicator(
               value: (score / 100.0).clamp(0.0, 1.0),
               strokeWidth: 10.0,
-              backgroundColor: Colors.slate.shade100,
+              backgroundColor: const Color(0xFFF1F5F9),
               valueColor: AlwaysStoppedAnimation<Color>(scoreColor),
               strokeCap: StrokeCap.round,
             ),

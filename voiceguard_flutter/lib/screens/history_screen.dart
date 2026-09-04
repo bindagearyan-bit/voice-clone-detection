@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/voiceguard_provider.dart';
-import '../models/call_session.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -30,7 +29,7 @@ class HistoryScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.history_edu, size: 64, color: Colors.slate.shade300),
+                  const Icon(Icons.history_edu, size: 64, color: Color(0xFFCBD5E1)),
                   const SizedBox(height: 12),
                   const Text(
                     'No call sessions recorded yet',
@@ -63,7 +62,7 @@ class HistoryScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [

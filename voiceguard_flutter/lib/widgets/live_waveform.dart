@@ -52,7 +52,7 @@ class _LiveWaveformState extends State<LiveWaveform> with SingleTickerProviderSt
               width: 3.5,
               height: height,
               decoration: BoxDecoration(
-                color: widget.activeColor.withOpacity(0.75 + (index % 4) * 0.05),
+                color: widget.activeColor.withValues(alpha: 0.75 + (index % 4) * 0.05),
                 borderRadius: BorderRadius.circular(4.0),
               ),
             );
