@@ -123,6 +123,13 @@ export const AudioLabPage = () => {
     }
   }, [analysisResult, isAnalyzing]);
 
+  // Auto-load default benchmark sample on mount so the Audio Lab is instantly ready for judges
+  useEffect(() => {
+    if (!selectedFile && availableSamples.length > 0) {
+      handleLoadSample(availableSamples[0]);
+    }
+  }, []);
+
   // Handle File Upload (Supports WAV, MP3, M4A, OGG, WEBM, AAC)
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];

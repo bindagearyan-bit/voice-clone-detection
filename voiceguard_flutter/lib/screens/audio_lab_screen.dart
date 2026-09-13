@@ -18,7 +18,15 @@ class _AudioLabScreenState extends State<AudioLabScreen> {
   String? _selectedSample;
   bool _isPlaying = false;
   bool _isAnalyzing = false;
-  String _terminalLogs = 'VoiceGuard Forensic Audio Inspection Terminal\nReady. Select a sample or upload audio file to inspect.\n${'=' * 60}';
+  String _terminalLogs = 'VoiceGuard Forensic Audio Inspection Terminal\nReady. Select a sample or upload audio file to inspect.\n============================================================';
+
+  @override
+  void initState() {
+    super.initState();
+    if (_samples.isNotEmpty) {
+      _selectedSample = _samples.first['name'];
+    }
+  }
 
   final List<Map<String, dynamic>> _samples = [
     {
