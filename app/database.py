@@ -3,6 +3,7 @@ from typing import Optional
 from app.config import settings
 
 try:
+    # pyrefly: ignore [missing-import]
     from supabase import create_client, Client
 except ImportError:
     create_client = None
